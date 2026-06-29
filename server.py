@@ -4,6 +4,7 @@ Exposes POST /redact for PII span detection and redaction using the
 openai/privacy-filter token-classification model. The model downloads
 from HuggingFace on first boot and is cached on a persistent volume.
 """
+
 import logging
 import os
 from contextlib import asynccontextmanager
@@ -28,7 +29,13 @@ def load_model():
 
     if not os.path.isdir(CHECKPOINT_DIR) or not os.listdir(CHECKPOINT_DIR):
         log.info("Downloading %s to %s ...", MODEL_ID, CHECKPOINT_DIR)
-        snapshot_download(MODEL_ID, local_dir=CHECKPOINT_DIR)
+        # Skip onnx/ (~12.7 GB) and original/ (~2.8 GB duplicate) — the OPF
+        # runtime only needs config.json + *.safetensors + tokenizer + viterbi.
+        snapshot_download(
+            MODEL_ID,
+            local_dir=CHECKPOINT_DIR,
+            ignore_patterns=["onnx/*", "original/*"],
+        )
     else:
         log.info("Loading model from %s", CHECKPOINT_DIR)
 
