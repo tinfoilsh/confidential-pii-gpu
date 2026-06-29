@@ -13,6 +13,7 @@ containers:
     runtime: nvidia
     gpus: all
     restart: always
+    networks: ["app"]
     env:
       - HF_HOME: "/hf-cache"
       - OPF_CHECKPOINT: "/hf-cache/privacy-filter"
