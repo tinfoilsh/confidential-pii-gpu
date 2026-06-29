@@ -7,11 +7,10 @@ FROM pytorch/pytorch:2.6.0-cuda12.6-cudnn9-runtime
 RUN apt-get update && apt-get install -y --no-install-recommends curl \
     && rm -rf /var/lib/apt/lists/*
 
-# torch is already installed by the base image; pip skips it.
-RUN pip install --no-cache-dir \
-    https://github.com/openai/privacy-filter/archive/refs/heads/main.tar.gz \
-    fastapi \
-    "uvicorn[standard]"
+# torch is preinstalled in the pytorch/pytorch base image; opf's torch dep
+# is already satisfied, so pip skips it.
+COPY requirements.txt /tmp/requirements.txt
+RUN pip install --no-cache-dir -r /tmp/requirements.txt
 
 COPY server.py /app/server.py
 
