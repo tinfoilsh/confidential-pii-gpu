@@ -3,9 +3,10 @@ cpus: 8
 memory: 32768
 gpus: 1
 
-networks:
-  app:
-    egress: open  # huggingface.co model download on first boot
+models:
+  - name: "privacy-filter"
+    repo: "openai/privacy-filter@7ffa9a043d54d1be65afb281eddf0ffbe629385b"
+    mwp: "7553ee1828e0df70820ff1f87faf70c79418963dad4c7a331f642ced46add02b_17419419648_3892cd2f-a06e-5aee-8276-93140b9f06ec"
 
 containers:
   - name: "privacy-filter"
@@ -13,13 +14,9 @@ containers:
     runtime: nvidia
     gpus: all
     restart: always
-    networks: ["app"]
     env:
-      - HF_HOME: "/hf-cache"
-      - OPF_CHECKPOINT: "/hf-cache/privacy-filter"
+      - OPF_CHECKPOINT: "/tinfoil/mwp/mwp-7553ee1828e0df70820ff1f87faf70c79418963dad4c7a331f642ced46add02b"
       - OPF_DEVICE: "cuda"
-    volumes:
-      - "hf-cache:/hf-cache"
     tmpfs:
       /tmp: size=512m,mode=1777,exec
       /root: size=2g,mode=0700,exec
@@ -28,7 +25,7 @@ containers:
       test: ["CMD", "curl", "-sf", "http://localhost:8001/health"]
       interval: 30s
       timeout: 5s
-      start_period: 10m  # cold model download on first boot
+      start_period: 5m  # model loading from MWP disk (no download)
 
 shim:
   upstream-port: 8001
