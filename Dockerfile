@@ -20,8 +20,7 @@ COPY server.py /app/server.py
 WORKDIR /app
 
 ENV OPF_DEVICE=cuda \
-    TIKTOKEN_CACHE_DIR=/app/tiktoken_cache \
-    OPF_MAX_CONCURRENCY=1
+    TIKTOKEN_CACHE_DIR=/app/tiktoken_cache
 
 EXPOSE 8001
 
