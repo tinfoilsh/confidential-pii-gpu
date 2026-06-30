@@ -11,11 +11,17 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl \
 COPY requirements.txt /tmp/requirements.txt
 RUN pip install --no-cache-dir -r /tmp/requirements.txt
 
+# Pre-populate tiktoken cache so o200k_base doesn't need network egress.
+# The cache file is named by sha1(url) — deterministic, never changes.
+COPY tiktoken_cache /app/tiktoken_cache
+
 COPY server.py /app/server.py
 
 WORKDIR /app
 
-ENV OPF_DEVICE=cuda
+ENV OPF_DEVICE=cuda \
+    TIKTOKEN_CACHE_DIR=/app/tiktoken_cache \
+    OPF_MAX_CONCURRENCY=1
 
 EXPOSE 8001
 
