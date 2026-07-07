@@ -10,7 +10,7 @@ models:
 
 containers:
   - name: "privacy-filter"
-    image: "ghcr.io/tinfoilsh/confidential-pii-gpu@sha256:0000000000000000000000000000000000000000000000000000000000000000" # placeholder - populated during release
+    image: "ghcr.io/tinfoilsh/confidential-pii-gpu@sha256:8bad00511f291ea6930300efe4d669897a2184771a64d88b8d0cd5823f46b582" # v0.0.1
     runtime: nvidia
     gpus: all
     restart: always
