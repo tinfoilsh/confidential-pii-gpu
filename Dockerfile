@@ -3,7 +3,10 @@
 # filesystem at boot — no HuggingFace download or egress required.
 FROM pytorch/pytorch:2.6.0-cuda12.6-cudnn9-runtime
 
-RUN apt-get update && apt-get install -y --no-install-recommends curl \
+# gcc is needed at runtime: triton JIT-compiles its CUDA driver and
+# per-kernel launchers from C source. triton ships its own cuda.h and
+# ptxas, so gcc is the only missing piece.
+RUN apt-get update && apt-get install -y --no-install-recommends curl gcc \
     && rm -rf /var/lib/apt/lists/*
 
 # torch is preinstalled in the pytorch/pytorch base image; opf's torch dep
