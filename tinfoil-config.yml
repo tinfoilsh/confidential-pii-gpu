@@ -10,12 +10,13 @@ models:
 
 containers:
   - name: "privacy-filter"
+    models: ["privacy-filter"]
     image: "ghcr.io/tinfoilsh/confidential-pii-gpu@sha256:0000000000000000000000000000000000000000000000000000000000000000" # placeholder - populated during release
     runtime: nvidia
     gpus: all
     restart: always
     env:
-      - OPF_CHECKPOINT: "/tinfoil/mpk/mpk-d8de260d205c89df009794749bb1d463e06c8b560a989dc8999fc3f7a77a0cb9/original"
+      - OPF_CHECKPOINT: "/tinfoil/models/privacy-filter/original"
       - OPF_DEVICE: "cuda"
     tmpfs:
       /tmp: size=512m,mode=1777,exec
